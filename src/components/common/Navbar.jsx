@@ -5,7 +5,7 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full z-50 bg-black backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold text-accent">
-          Regional OTT
+          RPlay
         </h1>
 
         <Link

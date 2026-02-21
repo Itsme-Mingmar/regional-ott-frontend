@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import LandingPage from "./pages/LandingPage";
+import SubscribePage from "./pages/subscription/SubscribePage";
 function App() {
 
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/subscribe" element={<SubscribePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

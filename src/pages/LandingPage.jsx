@@ -1,4 +1,5 @@
 import { FaPlay, FaBolt, FaFilm, FaMobileAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
     return (
@@ -24,9 +25,11 @@ const LandingPage = () => {
                         anywhere.
                     </p>
 
-                    <button className="px-8 py-3 bg-accent bg-purple-700 hover:bg-purple-600 rounded-lg text-lg font-semibold transition duration-300 shadow-lg shadow-accent/40 cursor-pointer">
-                        Subscribe Now
-                    </button>
+                    <Link to="/subscribe">
+                        <button className="px-8 py-3 bg-accent bg-purple-700 hover:bg-purple-600 rounded-lg text-lg font-semibold transition duration-300 shadow-lg shadow-accent/40 cursor-pointer">
+                            Subscribe Now
+                        </button>
+                    </Link>
                 </div>
             </section>
 
