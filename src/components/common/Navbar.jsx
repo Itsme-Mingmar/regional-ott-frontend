@@ -4,12 +4,12 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 w-full z-50 bg-black backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-accent">
+        <Link to="/" className="text-2xl font-bold text-accent">
           RPlay
-        </h1>
+        </Link>
 
         <Link
-          to="/login"
+          to="/signin"
           className="px-5 py-2 bg-purple-700 hover:bg-purple-500 rounded-lg transition duration-300"
         >
           Sign In
