@@ -3,6 +3,8 @@ import MainLayout from "./components/layout/MainLayout";
 import LandingPage from "./pages/LandingPage";
 import SubscribePage from "./pages/subscription/SubscribePage";
 import SignInPage from "./pages/SignInPage";
+import HomePage from "./pages/HomePage";
+import ProvinceDetailPage from "./pages/ProvinceDetailsPage";
 function App() {
 
   return (
@@ -12,6 +14,11 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/subscribe" element={<SubscribePage />} />
           <Route path="/signin" element={<SignInPage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route
+            path="/province/:province/:category"
+            element={<ProvinceDetailPage />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>
