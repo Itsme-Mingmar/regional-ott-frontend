@@ -5,8 +5,8 @@ const PlanSelector = ({ onNext }) => {
   const [plan, setPlan] = useState(null);
 
   const plans = {
-    standard: billing === "monthly" ? "$9" : "$90",
-    premium: billing === "monthly" ? "$15" : "$150",
+    standard: billing === "monthly" ? "Rs.400" : "4000",
+    premium: billing === "monthly" ? "Rs.600" : "Rs.6000",
   };
 
   return (
