@@ -5,6 +5,7 @@ import SubscribePage from "./pages/subscription/SubscribePage";
 import SignInPage from "./pages/SignInPage";
 import HomePage from "./pages/HomePage";
 import ProvinceDetailPage from "./pages/ProvinceDetailsPage";
+import WatchPage from "./pages/WatchPage";
 function App() {
 
   return (
@@ -19,6 +20,7 @@ function App() {
             path="/province/:province/:category"
             element={<ProvinceDetailPage />}
           />
+          <Route path="/watch/:id" element={<WatchPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
