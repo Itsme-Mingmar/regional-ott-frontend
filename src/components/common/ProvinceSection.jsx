@@ -43,13 +43,13 @@ const Section = ({ title, province }) => {
                 {dummyVideos.map((video) => (
                     <div
                         key={video.id}
-                        className="min-w-[250px] bg-[#1C1C2E] rounded-xl overflow-hidden transition duration-300 hover:scale-105 hover:shadow-xl"
+                        className="min-w-62.5 bg-[#1C1C2E] rounded-xl overflow-hidden transition duration-300 hover:scale-105 hover:shadow-xl"
                     >
                         <div className="relative">
                             <img
                                 src={video.image}
                                 alt={video.title}
-                                className="w-full h-[160px] object-cover"
+                                className="w-full h-40 object-cover"
                             />
                             <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition duration-300" />
                         </div>

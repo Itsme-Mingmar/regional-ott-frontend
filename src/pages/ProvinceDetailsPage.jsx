@@ -10,7 +10,7 @@ const ProvinceDetailPage = () => {
   }));
 
   return (
-    <div className="pt-24 px-8 min-h-screen bg-[#0F0F1A] text-white">
+    <div className="pt-24 pb-12 px-8 min-h-screen bg-[#0F0F1A] text-white">
       <h1 className="text-3xl font-bold mb-10 capitalize">
         {province} - {category.replace("-", " ")}
       </h1>
@@ -24,7 +24,7 @@ const ProvinceDetailPage = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="w-full h-[280px] object-cover"
+              className="w-full h-70 object-cover"
             />
             <div className="mt-3">
               <h3 className="text-sm">{item.title}</h3>

@@ -50,7 +50,7 @@ const MovieGrid = () => {
               <img
                 src={movie.image}
                 alt={movie.title}
-                className="w-full h-[280px] object-cover transform group-hover:scale-105 transition duration-300"
+                className="w-full h-70 object-cover transform group-hover:scale-105 transition duration-300"
               />
             </div>
 
