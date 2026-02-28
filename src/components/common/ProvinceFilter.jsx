@@ -8,7 +8,7 @@ const ProvinceFilter = ({ provinces, activeProvince, setActiveProvince }) => {
             onClick={() => setActiveProvince(province)}
             className={`px-6 py-2 rounded-full whitespace-nowrap transition-all duration-300 ${
               activeProvince === province
-                ? "bg-linear-to-r from-purple-600 to-purple-400 text-white shadow-lg scale-105"
+                ? "bg-linear-to-r from-purple-600 to-pink-500 text-white shadow-lg scale-105"
                 : "bg-[#1C1C2E] hover:bg-purple-700"
             }`}
           >
