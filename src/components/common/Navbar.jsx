@@ -19,7 +19,7 @@ const Navbar = () => {
           </div>
 
           {/* Text */}
-          <span className="bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text text-transparent transition-all duration-300 group-hover:tracking-wider">
+          <span className="bg-linear-to-r from-red-500 via-pink-500 to-purple-500 bg-clip-text text-transparent transition-all duration-300 group-hover:tracking-wider">
             RPlay
           </span>
         </Link>

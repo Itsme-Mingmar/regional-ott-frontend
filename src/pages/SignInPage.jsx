@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const SignInPage = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // 🔥 Simulated backend email check
   const handleEmailCheck = () => {
@@ -26,6 +28,7 @@ const SignInPage = () => {
     if (!password.trim()) return;
 
     console.log("Login payload:", { email, password });
+    navigate("/home")
 
     // Later:
     // axios.post("/api/auth/login", { email, password })
