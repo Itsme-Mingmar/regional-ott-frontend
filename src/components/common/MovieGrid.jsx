@@ -1,45 +1,104 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { FaSearch } from "react-icons/fa";
 
 const moviesData = [
-  { id: 1, title: "The Himalayan Quest", date: "2023", image: "https://picsum.photos/300/450?1" },
-  { id: 2, title: "Echoes of Kathmandu", date: "2022", image: "https://picsum.photos/300/450?2" },
-  { id: 3, title: "Mountain Warriors", date: "2021", image: "https://picsum.photos/300/450?3" },
-  { id: 4, title: "Silent Valley", date: "2020", image: "https://picsum.photos/300/450?4" },
-  { id: 5, title: "Sacred Rivers", date: "2024", image: "https://picsum.photos/300/450?5" },
-  { id: 6, title: "The Last Temple", date: "2023", image: "https://picsum.photos/300/450?6" },
-  { id: 7, title: "Hidden Kingdom", date: "2022", image: "https://picsum.photos/300/450?7" },
-  { id: 8, title: "Cultural Awakening", date: "2021", image: "https://picsum.photos/300/450?8" },
-  { id: 9, title: "Beyond Everest", date: "2024", image: "https://picsum.photos/300/450?9" },
-  { id: 10, title: "The Sherpa Story", date: "2023", image: "https://picsum.photos/300/450?10" },
-  { id: 11, title: "Lost Monastery", date: "2022", image: "https://picsum.photos/300/450?11" },
-  { id: 12, title: "Nepal Untold", date: "2021", image: "https://picsum.photos/300/450?12" },
+  { id: 1, title: "The Himalayan Quest", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?1" },
+  { id: 2, title: "Echoes of Kathmandu", year: 2022, country: "Nepal", image: "https://picsum.photos/300/450?2" },
+  { id: 3, title: "Mountain Warriors", year: 2021, country: "India", image: "https://picsum.photos/300/450?3" },
+  { id: 4, title: "Silent Valley", year: 2020, country: "USA", image: "https://picsum.photos/300/450?4" },
+  { id: 5, title: "Sacred Rivers", year: 2024, country: "Nepal", image: "https://picsum.photos/300/450?5" },
+  { id: 6, title: "The Last Temple", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?6" },
+  { id: 7, title: "Hidden Kingdom", year: 2022, country: "UK", image: "https://picsum.photos/300/450?7" },
+  { id: 8, title: "Cultural Awakening", year: 2021, country: "Nepal", image: "https://picsum.photos/300/450?8" },
+  { id: 9, title: "Beyond Everest", year: 2024, country: "Nepal", image: "https://picsum.photos/300/450?9" },
+  { id: 10, title: "The Sherpa Story", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?10" },
+  { id: 11, title: "Lost Monastery", year: 2022, country: "China", image: "https://picsum.photos/300/450?11" },
+  { id: 12, title: "Nepal Untold", year: 2021, country: "Nepal", image: "https://picsum.photos/300/450?12" },
 ];
 
 const MovieGrid = () => {
   const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState("ALL");
 
-  // Filter logic
-  const filteredMovies = moviesData.filter((movie) =>
-    movie.title.toLowerCase().includes(search.toLowerCase())
-  );
+  // 🔥 Optimized filtering (production pattern)
+  const filteredMovies = useMemo(() => {
+    return moviesData.filter((movie) => {
+      const matchesSearch = movie.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const matchesCountry =
+        filterType === "ALL"
+          ? true
+          : movie.country === "Nepal";
+
+      return matchesSearch && matchesCountry;
+    });
+  }, [search, filterType]);
 
   return (
-    <div>
-      {/* Top Section */}
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-2xl font-semibold">All Available Movies</h2>
+    <div className="px-4 sm:px-6 lg:px-8">
 
-        <input
-          type="text"
-          placeholder="Search movies..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="bg-[#1C1C2E] px-4 py-2 rounded-lg outline-none focus:ring-2 focus:ring-purple-600 transition duration-300 w-64"
-        />
+      {/* FILTER BUTTONS (NOW ABOVE TITLE) */}
+      <div className="flex justify-center sm:justify-start mb-6">
+        <div className="inline-flex bg-[#1C1C2E] p-1 rounded-full">
+
+          <button
+            onClick={() => setFilterType("ALL")}
+            className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300
+            ${filterType === "ALL"
+                ? "bg-linear-to-r from-purple-600 to-pink-500 text-white shadow-lg"
+                : "text-gray-400 hover:text-white"}
+          `}
+          >
+            All Movies
+          </button>
+
+          <button
+            onClick={() => setFilterType("NEPAL")}
+            className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300
+            ${filterType === "NEPAL"
+                ? "bg-linear-to-r from-purple-600 to-pink-500 text-white shadow-lg"
+                : "text-gray-400 hover:text-white"}
+          `}
+          >
+            Made in Nepal
+          </button>
+
+        </div>
       </div>
 
-      {/* Grid Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+      {/* TITLE + SEARCH */}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
+
+        {/* Title */}
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-bold">
+            {filterType === "ALL"
+              ? "All Available Movies"
+              : "Made in Nepal"}
+          </h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Discover premium cinematic content
+          </p>
+        </div>
+
+        {/* Search */}
+        <div className="relative w-full md:w-72">
+          <FaSearch className="absolute left-3 top-3 text-gray-400 text-sm" />
+          <input
+            type="text"
+            placeholder="Search movies..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full bg-[#1C1C2E] pl-10 pr-4 py-2 rounded-xl outline-none focus:ring-2 focus:ring-purple-600 transition duration-300"
+          />
+        </div>
+
+      </div>
+
+      {/* GRID */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5 sm:gap-6">
         {filteredMovies.map((movie) => (
           <div
             key={movie.id}
@@ -50,7 +109,7 @@ const MovieGrid = () => {
               <img
                 src={movie.image}
                 alt={movie.title}
-                className="w-full h-70 object-cover transform group-hover:scale-105 transition duration-300"
+                className="w-full h-64 sm:h-72 object-cover transform group-hover:scale-105 transition duration-300"
               />
             </div>
 
@@ -60,19 +119,19 @@ const MovieGrid = () => {
                 {movie.title}
               </h3>
               <p className="text-xs text-gray-400">
-                {movie.date}
+                {movie.year} • {movie.country}
               </p>
             </div>
           </div>
         ))}
 
-        {/* Empty state */}
         {filteredMovies.length === 0 && (
           <p className="col-span-full text-center text-gray-400 mt-10">
             No movies found.
           </p>
         )}
       </div>
+
     </div>
   );
 };
