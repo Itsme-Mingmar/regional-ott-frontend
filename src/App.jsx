@@ -6,6 +6,7 @@ import SignInPage from "./pages/SignInPage";
 import HomePage from "./pages/HomePage";
 import ProvinceDetailPage from "./pages/ProvinceDetailsPage";
 import WatchPage from "./pages/WatchPage";
+import PlaceDetails from "./pages/PlaceDetails";
 function App() {
 
   return (
@@ -19,6 +20,10 @@ function App() {
           <Route
             path="/province/:province/:category"
             element={<ProvinceDetailPage />}
+          />
+          <Route
+            path="/province/:province/tourism/:slug"
+            element={<PlaceDetails />}
           />
           <Route path="/watch/:id" element={<WatchPage />} />
         </Route>
