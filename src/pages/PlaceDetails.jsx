@@ -51,12 +51,12 @@ const PlaceDetails = () => {
         {place.images.map((img, index) => (
           <div
             key={index}
-            className="w-full flex-shrink-0 flex justify-center px-8"
+            className="w-full shrink-0 flex justify-center px-8"
           >
             <img
               src={img}
               alt={place.name}
-              className="w-[70%] h-[450px] object-cover rounded-3xl shadow-2xl"
+              className="w-[70%] h-112.5 object-cover rounded-3xl shadow-2xl"
             />
           </div>
         ))}

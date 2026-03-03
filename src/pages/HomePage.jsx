@@ -11,7 +11,7 @@ const provinces = [
   "Gandaki",
   "Lumbini",
   "Karnali",
-  "Sudurpashchim",
+  "Sudurpaschim",
 ];
 
 const HomePage = () => {
