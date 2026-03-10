@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import ProvinceDetailPage from "./pages/ProvinceDetailsPage";
 import WatchPage from "./pages/WatchPage";
 import PlaceDetails from "./pages/PlaceDetails";
+import ProfilePage from "./pages/ProfilePage";
+import AdminDashboard from "./pages/AdminDashboard";
 function App() {
 
   return (
@@ -26,6 +28,8 @@ function App() {
             element={<PlaceDetails />}
           />
           <Route path="/watch/:id" element={<WatchPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>
