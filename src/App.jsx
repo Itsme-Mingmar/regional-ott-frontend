@@ -8,7 +8,7 @@ import ProvinceDetailPage from "./pages/ProvinceDetailsPage";
 import WatchPage from "./pages/WatchPage";
 import PlaceDetails from "./pages/PlaceDetails";
 import ProfilePage from "./pages/ProfilePage";
-import AdminDashboard from "./pages/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 function App() {
 
   return (
