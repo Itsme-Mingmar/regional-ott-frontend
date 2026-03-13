@@ -1,8 +1,11 @@
 import { useState } from "react";
 import PaymentModal from "./PaymentModal";
+import { registerUser } from "../../services/authService";
 
 const AccountForm = ({ selectedPlan, billing }) => {
   const [showModal, setShowModal] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -24,7 +27,7 @@ const AccountForm = ({ selectedPlan, billing }) => {
     });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     const payload = {
       ...formData,
       planType: selectedPlan,
@@ -35,10 +38,19 @@ const AccountForm = ({ selectedPlan, billing }) => {
 
     // STANDARD PLAN → Direct signup
     if (selectedPlan === "standard") {
-      // await axios.post("/api/auth/register", payload)
-
-      console.log("Standard account created (no payment)");
-      alert("Account created successfully!");
+      setLoading(true);
+      setError("");
+      try {
+        const response = await registerUser(payload);
+        console.log("Registration successful:", response);
+        alert("Account created successfully!");
+        // Maybe navigate to home or login
+      } catch (err) {
+        console.error("Registration failed:", err);
+        setError(err.message || "Registration failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     }
 
     // PREMIUM PLAN → Open payment
@@ -95,12 +107,16 @@ const AccountForm = ({ selectedPlan, billing }) => {
         </select>
       </div>
 
+      {error && (
+        <p className="text-red-500 text-sm mt-2">{error}</p>
+      )}
+
       <button
-        disabled={!isFormValid}
+        disabled={!isFormValid || loading}
         onClick={handleContinue}
         className="w-full mt-6 py-3 bg-purple-700 rounded-lg font-semibold hover:bg-purple-500 disabled:opacity-40 transition"
       >
-        Continue
+        {loading ? "Creating Account..." : "Continue"}
       </button>
 
       {showModal && <PaymentModal onClose={() => setShowModal(false)} />}
