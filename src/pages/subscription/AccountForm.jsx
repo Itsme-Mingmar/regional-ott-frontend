@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { registerUser, loginUser } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 import PaymentModal from "./PaymentModal";
-import { registerUser } from "../../services/authService";
 
 const AccountForm = ({ selectedPlan, billing }) => {
+  const navigate = useNavigate();
+  const auth = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,39 +32,66 @@ const AccountForm = ({ selectedPlan, billing }) => {
   };
 
   const handleContinue = async () => {
+    if (loading) return; // prevent double click
+
     const payload = {
       ...formData,
-      planType: selectedPlan,
-      billingCycle: billing,
+      plan: selectedPlan,
+      billing: billing,
     };
 
     console.log("Sending to backend:", payload);
 
-    // STANDARD PLAN → Direct signup
-    if (selectedPlan === "standard") {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await registerUser(payload);
-        console.log("Registration successful:", response);
-        alert("Account created successfully!");
-        // Maybe navigate to home or login
-      } catch (err) {
-        console.error("Registration failed:", err);
-        setError(err.message || "Registration failed. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    setLoading(true);
+    setError("");
 
-    // PREMIUM PLAN → Open payment
-    if (selectedPlan === "premium") {
-      setShowModal(true);
+    try {
+
+      // STANDARD PLAN → Register and auto-login
+      if (selectedPlan === "standard") {
+
+        const response = await registerUser(payload);
+
+        const user = response.data;
+        const token = response.data.token;
+
+        auth.login(user, token);
+
+        navigate(`/province-content/${user.selectedProvince}`);
+      }
+
+      // PREMIUM PLAN → Register and show payment modal
+      if (selectedPlan === "premium") {
+
+        const response = await registerUser(payload);
+
+        sessionStorage.setItem(
+          "pendingSignup",
+          JSON.stringify({
+            user: response.data.data,
+            token: null,
+          })
+        );
+
+        setShowModal(true);
+      }
+
+    } catch (err) {
+      console.error("Registration failed:", err);
+
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Something went wrong";
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md bg-[#1c1c2e] p-10 rounded-xl shadow-xl">
+    <div className="max-w-md mx-auto bg-[#0f0f23] p-8 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Create Your Account
       </h2>
@@ -105,6 +136,7 @@ const AccountForm = ({ selectedPlan, billing }) => {
           <option value="karnali">Karnali</option>
           <option value="sudurpashchim">Sudurpashchim</option>
         </select>
+
       </div>
 
       {error && (
@@ -120,6 +152,7 @@ const AccountForm = ({ selectedPlan, billing }) => {
       </button>
 
       {showModal && <PaymentModal onClose={() => setShowModal(false)} />}
+
     </div>
   );
 };
