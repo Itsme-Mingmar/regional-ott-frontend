@@ -1,4 +1,4 @@
-const PaymentModal = ({ onClose }) => {
+const PaymentModal = ({ onClose, onSuccess }) => {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-cardBg p-8 rounded-xl text-center relative w-80">
@@ -19,7 +19,10 @@ const PaymentModal = ({ onClose }) => {
           className="mx-auto mb-4"
         />
 
-        <button className="px-6 py-2 bg-purple-700 rounded-lg hover:bg-purple-500 transition">
+        <button
+          onClick={onSuccess}
+          className="px-6 py-2 bg-purple-700 rounded-lg hover:bg-purple-500 transition"
+        >
           Proceed
         </button>
       </div>
