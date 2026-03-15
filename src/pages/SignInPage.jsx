@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
 
 const SignInPage = () => {
   const [step, setStep] = useState(1);
@@ -8,6 +10,7 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const auth = useAuth();
 
   // 🔥 Simulated backend email check
   const handleEmailCheck = () => {
@@ -24,14 +27,26 @@ const SignInPage = () => {
     }
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!password.trim()) return;
 
-    console.log("Login payload:", { email, password });
-    navigate("/home")
+    try {
+      const response = await loginUser({ email, password });
+      const user = response.data.data;
 
-    // Later:
-    // axios.post("/api/auth/login", { email, password })
+      // Persist auth state across the app
+      auth.login(user, response.data.token);
+
+      if (user.planType === "standard") {
+        navigate(`/province-content/${user.province}`);
+      } else if (user.planType === "premium") {
+        navigate("/premium-payment");
+      } else {
+        navigate("/home");
+      }
+    } catch (error) {
+      setError(error.message || "Login failed");
+    }
   };
 
   return (
