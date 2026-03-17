@@ -28,7 +28,7 @@ const HomePage = () => {
       setUser(userData);
 
       if (userData.planType === "standard") {
-        setActiveProvince(userData.selectedProvince.slug);
+        setActiveProvince(userData.selectedProvince?.slug);
       }
     }
   }, []);
