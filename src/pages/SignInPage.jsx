@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
+import { checkEmail } from "../services/authService";
 
 const SignInPage = () => {
   const [step, setStep] = useState(1);
@@ -12,18 +13,16 @@ const SignInPage = () => {
   const navigate = useNavigate();
   const auth = useAuth();
 
-  // 🔥 Simulated backend email check
-  const handleEmailCheck = () => {
+
+  const handleEmailCheck = async () => {
     if (!email.trim()) return;
 
-    // Simulate existing user
-    const existingUserEmail = "test@gmail.com";
-
-    if (email === existingUserEmail) {
+    try {
+      await checkEmail({ email });
       setError("");
       setStep(2);
-    } else {
-      setError("No account found with this email.");
+    } catch (err) {
+      setError("No account found with this email. Please sign up first.");
     }
   };
 
@@ -32,18 +31,13 @@ const SignInPage = () => {
 
     try {
       const response = await loginUser({ email, password });
-      const user = response.data.data;
 
-      // Persist auth state across the app
-      auth.login(user, response.data.token);
+      const user = response.data; // ✅ FIXED
+      const token = response.data.token; // ✅ FIXED
 
-      if (user.planType === "standard") {
-        navigate(`/province-content/${user.province}`);
-      } else if (user.planType === "premium") {
-        navigate("/premium-payment");
-      } else {
-        navigate("/home");
-      }
+      auth.login(user, token);
+      navigate("/home"); 
+
     } catch (error) {
       setError(error.message || "Login failed");
     }
@@ -76,7 +70,7 @@ const SignInPage = () => {
               disabled={!email}
               onClick={handleEmailCheck}
               className={`w-full mt-6 py-3 rounded-lg font-semibold transition
-                ${email 
+                ${email
                   ? "bg-[#7C3AED] hover:bg-purple-500"
                   : "bg-gray-600 cursor-not-allowed"}
               `}
@@ -105,7 +99,7 @@ const SignInPage = () => {
               disabled={!password}
               onClick={handleLogin}
               className={`w-full mt-6 py-3 rounded-lg font-semibold transition
-                ${password 
+                ${password
                   ? "bg-[#7C3AED] hover:bg-purple-500"
                   : "bg-gray-600 cursor-not-allowed"}
               `}
