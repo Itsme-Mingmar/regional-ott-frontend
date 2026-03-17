@@ -5,13 +5,13 @@ import ProvinceSection from "../components/common/ProvinceSection";
 
 const allProvinces = [
   "Global Movies",
-  "Koshi",
-  "Madesh",
-  "Bagmati",
-  "Gandaki",
-  "Lumbini",
-  "Karnali",
-  "Sudurpaschim",
+  "koshi",
+  "madhesh",
+  "bagmati",
+  "gandaki",
+  "lumbini",
+  "karnali",
+  "sudurpashchim",
 ];
 
 const HomePage = () => {
@@ -19,35 +19,33 @@ const HomePage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
+    const storedAuth = localStorage.getItem("auth");
 
-      // For standard plans, default to the user's province (keeps UI consistent)
-      if (parsedUser.planType === 'standard') {
-        setActiveProvince(parsedUser.province);
+    if (storedAuth) {
+      const parsedAuth = JSON.parse(storedAuth);
+      const userData = parsedAuth.user;
+
+      setUser(userData);
+
+      if (userData.planType === "standard") {
+        setActiveProvince(userData.selectedProvince.slug);
       }
     }
   }, []);
 
-  const isStandard = user?.planType === 'standard';
-  const userProvince = user?.province;
+  const isStandard = user?.planType === "standard";
+  const provinceSlug = user?.selectedProvince?.slug;
 
-  useEffect(() => {
-    if (isStandard && userProvince && activeProvince !== userProvince) {
-      setActiveProvince(userProvince);
-    }
-  }, [isStandard, userProvince, activeProvince]);
-
+  const provincesToShow = isStandard && provinceSlug
+    ? [provinceSlug]
+    : allProvinces;
   return (
     <div className="pt-24 px-6 pb-16 bg-[#0F0F1A] min-h-screen text-white">
+
       <ProvinceFilter
-        provinces={allProvinces}
+        provinces={provincesToShow}
         activeProvince={activeProvince}
         setActiveProvince={setActiveProvince}
-        planType={user?.planType}
-        userProvince={user?.province}
       />
 
       {activeProvince === "Global Movies" ? (
@@ -55,6 +53,7 @@ const HomePage = () => {
       ) : (
         <ProvinceSection province={activeProvince} />
       )}
+
     </div>
   );
 };
