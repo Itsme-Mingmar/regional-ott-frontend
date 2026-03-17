@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser, loginUser } from "../../services/authService";
+import { registerUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 import PaymentModal from "./PaymentModal";
 
@@ -57,7 +57,7 @@ const AccountForm = ({ selectedPlan, billing }) => {
 
         auth.login(user, token);
 
-        navigate(`/province-content/${user.selectedProvince}`);
+        navigate("/home");
       }
 
       // PREMIUM PLAN → Register and show payment modal
