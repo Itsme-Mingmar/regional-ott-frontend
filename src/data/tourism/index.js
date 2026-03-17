@@ -13,5 +13,5 @@ export const tourismData = {
   bagmati: bagmatiTourism,
   lumbini: lumbiniTourism,
   karnali: karnaliTourism,
-  sudurpaschim: sudurTourism
+  sudurpashchim: sudurTourism
 };
