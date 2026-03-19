@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const ProfilePage = () => {
 
-  const [user,setUser] = useState(null);
+  const [user, setUser] = useState(null);
 
-  useEffect(()=>{
+  useEffect(() => {
 
     const dummyUser = {
       name: "Mingmar Tamang",
@@ -18,9 +18,9 @@ const ProfilePage = () => {
 
     setUser(dummyUser);
 
-  },[]);
+  }, []);
 
-  if(!user){
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#141427] text-white">
         Loading...
@@ -34,16 +34,29 @@ const ProfilePage = () => {
       <div className="max-w-5xl mx-auto">
 
         {/* PROFILE HEADER */}
-        <div className="flex items-center gap-6 mb-12">
+        <div className="flex items-center justify-between mb-12">
 
-          <div className="w-10 h-10 rounded-full bg-purple-700 flex items-center justify-center text-xl font-bold">
-            {user.name.charAt(0)}
+          {/* LEFT SIDE */}
+          <div className="flex items-center gap-6">
+
+            <div className="w-10 h-10 rounded-full bg-purple-700 flex items-center justify-center text-xl font-bold">
+              {user.name.charAt(0)}
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-bold">{user.name}</h1>
+              <p className="text-gray-400">{user.email}</p>
+            </div>
+
           </div>
 
-          <div>
-            <h1 className="text-3xl font-bold">{user.name}</h1>
-            <p className="text-gray-400">{user.email}</p>
-          </div>
+          {/* RIGHT SIDE (LOGOUT BUTTON) */}
+          <button
+            //onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-500 px-5 py-2 rounded-lg text-sm font-medium transition text-white/80"
+          >
+            Logout
+          </button>
 
         </div>
 
