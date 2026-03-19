@@ -94,6 +94,9 @@ const SignInPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 rounded-lg bg-[#0F0F1A] border border-gray-700 focus:border-[#7C3AED] outline-none"
             />
+            {error && (
+              <p className="text-red-500 text-sm mt-2">{error}</p>
+            )}
 
             <button
               disabled={!password}
