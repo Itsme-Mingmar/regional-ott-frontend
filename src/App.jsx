@@ -9,6 +9,7 @@ import WatchPage from "./pages/WatchPage";
 import PlaceDetails from "./pages/PlaceDetails";
 import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
 
   return (
@@ -18,18 +19,21 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/subscribe" element={<SubscribePage />} />
           <Route path="/signin" element={<SignInPage />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route
-            path="/province/:province/:category"
-            element={<ProvinceDetailPage />}
-          />
-          <Route
-            path="/province/:province/tourism/:slug"
-            element={<PlaceDetails />}
-          />
-          <Route path="/watch/:id" element={<WatchPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+          <Route element={<ProtectedRoute />}>
+
+            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/province/:province/:category"
+              element={<ProvinceDetailPage />}
+            />
+            <Route
+              path="/province/:province/tourism/:slug"
+              element={<PlaceDetails />}
+            />
+            <Route path="/watch/:id" element={<WatchPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
