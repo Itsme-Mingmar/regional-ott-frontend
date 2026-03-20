@@ -1,29 +1,40 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { logoutUser } from "../services/authService";
+import { useAuth } from "../context/AuthContext";
+import { getUserProfile } from "../services/authService";
 
 const ProfilePage = () => {
 
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await getUserProfile();
 
-    const dummyUser = {
-      name: "Mingmar Tamang",
-      email: "mingmar@gmail.com",
-      province: "Gandaki",
-      planType: "standard",
-      subscriptionStatus: false,
-      role: "admin"
+        setUser(res.data);
+      } catch (error) {
+        console.error("Profile fetch failed:", error.message);
+      }
     };
 
-    setUser(dummyUser);
-
+    fetchProfile();
   }, []);
+  const auth = useAuth();
+  const handleLogout = async () => {
+    try {
+      await logoutUser();   // backend + localStorage clear
+      auth.logout();        // clear context (important)
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#141427] text-white">
-        Loading...
+        Loading profile...
       </div>
     );
   }
@@ -52,7 +63,7 @@ const ProfilePage = () => {
 
           {/* RIGHT SIDE (LOGOUT BUTTON) */}
           <button
-            //onClick={handleLogout}
+            onClick={handleLogout}
             className="bg-red-600 hover:bg-red-500 px-5 py-2 rounded-lg text-sm font-medium transition text-white/80"
           >
             Logout
@@ -137,7 +148,7 @@ const ProfilePage = () => {
         </div>
 
         {/* ADMIN PANEL */}
-        {user.role === "admin" && (
+        {user.role == "admin" && (
 
           <div className="mt-12 bg-[#1C1C2E] p-8 rounded-xl">
 
