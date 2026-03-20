@@ -3,7 +3,7 @@ import { Play, CircleUser } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const Navbar = () => {
-  const { user, isLoggedIn } = useAuth(); // ✅ FIXED
+  const { user, isLoggedIn } = useAuth(); 
   const navigate = useNavigate();
 
   return (
@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         
         <Link
-          to="/"
+          to={isLoggedIn ? "/home" : "/"}
           className="group flex items-center gap-2 text-2xl font-extrabold tracking-wide"
         >
           {/* Play Icon Circle */}
