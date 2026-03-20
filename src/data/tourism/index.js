@@ -9,7 +9,7 @@ import { sudurTourism } from "./sudurpaschim";
 export const tourismData = {
   gandaki: gandakiTourism,
   koshi: koshiTourism,
-  madesh: madeshTourism,
+  madhesh: madeshTourism,
   bagmati: bagmatiTourism,
   lumbini: lumbiniTourism,
   karnali: karnaliTourism,
