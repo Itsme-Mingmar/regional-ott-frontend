@@ -1,3 +1,4 @@
+import khalti from "../../assets/images/khalti.png";
 const PaymentModal = ({ onClose, onSuccess }) => {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
@@ -10,12 +11,12 @@ const PaymentModal = ({ onClose, onSuccess }) => {
         </button>
 
         <h3 className="text-xl font-semibold mb-4">
-          Choose Payment Method
+          Payment Method
         </h3>
 
         <img
-          src="https://via.placeholder.com/150x80?text=Wallet+Logo"
-          alt="Wallet"
+          src={khalti}
+          alt="Khalti Wallet"
           className="mx-auto mb-4"
         />
 
