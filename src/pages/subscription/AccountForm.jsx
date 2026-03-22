@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { registerUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 import PaymentModal from "./PaymentModal";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AccountForm = ({ selectedPlan, billing }) => {
   const navigate = useNavigate();
@@ -32,63 +34,50 @@ const AccountForm = ({ selectedPlan, billing }) => {
   };
 
   const handleContinue = async () => {
-    if (loading) return; // prevent double click
+    if (loading) return;
 
     const payload = {
       ...formData,
       plan: selectedPlan,
-      billing: billing,
+      billing,
     };
-
-    console.log("Sending to backend:", payload);
 
     setLoading(true);
     setError("");
 
     try {
-
-      // STANDARD PLAN → Register and auto-login
       if (selectedPlan === "standard") {
-
         const response = await registerUser(payload);
 
-        const user = response.data;
-        const token = response.data.token;
-
-        auth.login(user, token);
-
+        auth.login(response.data, response.data.token);
         navigate("/home");
       }
 
-      // PREMIUM PLAN → Register and show payment modal
       if (selectedPlan === "premium") {
-
-        const response = await registerUser(payload);
-
-        sessionStorage.setItem(
-          "pendingSignup",
-          JSON.stringify({
-            user: response.data.data,
-            token: null,
-          })
-        );
-
         setShowModal(true);
       }
 
     } catch (err) {
-      console.error("Registration failed:", err);
-
-      const errorMessage =
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        "Something went wrong";
-
-      setError(errorMessage);
+      setError(err.response?.data?.message || err.response?.data?.error || "Something went wrong");
     } finally {
       setLoading(false);
     }
   };
+  const handlePayment = async () => {
+  try {
+    const res = await axios.post(`${API_URL}/payment/initiate`, {
+      ...formData,
+      plan: selectedPlan,
+      billing
+    });
+
+    window.location.href = res.data.payment_url;
+
+  } catch (err) {
+    setError(err.response?.data?.message || err.response?.data?.error || "Payment initiation failed");
+    setShowModal(false);
+  }
+};
 
   return (
     <div className="max-w-md mx-auto bg-[#0f0f23] p-8 rounded-lg shadow-lg">
@@ -151,7 +140,7 @@ const AccountForm = ({ selectedPlan, billing }) => {
         {loading ? "Creating Account..." : "Continue"}
       </button>
 
-      {showModal && <PaymentModal onClose={() => setShowModal(false)} />}
+      {showModal && <PaymentModal onClose={() => setShowModal(false)} onSuccess={handlePayment} />}
 
     </div>
   );
