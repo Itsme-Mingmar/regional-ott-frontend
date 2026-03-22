@@ -8,12 +8,12 @@ const API_URL = import.meta.env.VITE_API_URL;
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
   const called = useRef(false);
 
   useEffect(() => {
     if (called.current) return; 
     called.current = true;
+
     const pidx = new URLSearchParams(window.location.search).get("pidx");
 
     if (!pidx) {
@@ -23,10 +23,14 @@ const PaymentSuccess = () => {
 
     const verify = async () => {
       try {
-        const res = await axios.post(`${API_URL}/payment/verify`, { pidx });
+        const res = await axios.post(
+          `${API_URL}/payment/verify`,
+          { pidx },
+          { withCredentials: true } // ✅ IMPORTANT
+        );
 
         if (res.data.success) {
-          login(res.data.user); 
+          login(res.data.user, "cookie"); // ✅ FIX
           navigate("/home");
         } else {
           navigate("/subscribe?payment=failed");
