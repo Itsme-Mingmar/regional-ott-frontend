@@ -1,137 +1,132 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
-
-const moviesData = [
-  { id: 1, title: "The Himalayan Quest", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?1" },
-  { id: 2, title: "Echoes of Kathmandu", year: 2022, country: "Nepal", image: "https://picsum.photos/300/450?2" },
-  { id: 3, title: "Mountain Warriors", year: 2021, country: "India", image: "https://picsum.photos/300/450?3" },
-  { id: 4, title: "Silent Valley", year: 2020, country: "USA", image: "https://picsum.photos/300/450?4" },
-  { id: 5, title: "Sacred Rivers", year: 2024, country: "Nepal", image: "https://picsum.photos/300/450?5" },
-  { id: 6, title: "The Last Temple", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?6" },
-  { id: 7, title: "Hidden Kingdom", year: 2022, country: "UK", image: "https://picsum.photos/300/450?7" },
-  { id: 8, title: "Cultural Awakening", year: 2021, country: "Nepal", image: "https://picsum.photos/300/450?8" },
-  { id: 9, title: "Beyond Everest", year: 2024, country: "Nepal", image: "https://picsum.photos/300/450?9" },
-  { id: 10, title: "The Sherpa Story", year: 2023, country: "Nepal", image: "https://picsum.photos/300/450?10" },
-  { id: 11, title: "Lost Monastery", year: 2022, country: "China", image: "https://picsum.photos/300/450?11" },
-  { id: 12, title: "Nepal Untold", year: 2021, country: "Nepal", image: "https://picsum.photos/300/450?12" },
-];
+import { useNavigate } from "react-router-dom";
+import { getAllMovies, getNepaliMovies } from "../../services/videoService";
 
 const MovieGrid = () => {
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState("ALL");
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 🔥 Optimized filtering (production pattern)
+  const navigate = useNavigate();
+
+  // Fetch from backend
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        setLoading(true);
+
+        let data = [];
+
+        if (filterType === "ALL") {
+          data = await getAllMovies();
+        } else {
+          data = await getNepaliMovies();
+        }
+
+        // ✅ Transform backend → UI format
+        const formatted = data.map((movie) => ({
+          id: movie._id,
+          title: movie.title,
+          year: movie.releaseYear,
+          image: movie.thumbnailUrl,
+        }));
+
+        setMovies(formatted);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [filterType]);
+
+  // 🔥 Search filter
   const filteredMovies = useMemo(() => {
-    return moviesData.filter((movie) => {
-      const matchesSearch = movie.title
-        .toLowerCase()
-        .includes(search.toLowerCase());
+    return movies.filter((movie) =>
+      movie.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search, movies]);
 
-      const matchesCountry =
-        filterType === "ALL"
-          ? true
-          : movie.country === "Nepal";
-
-      return matchesSearch && matchesCountry;
-    });
-  }, [search, filterType]);
+  if (loading) {
+    return <div className="text-center text-white mt-10">Loading...</div>;
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
 
-      {/* FILTER BUTTONS (NOW ABOVE TITLE) */}
+      {/* FILTER */}
       <div className="flex justify-center sm:justify-start mb-6">
         <div className="inline-flex bg-[#1C1C2E] p-1 rounded-full">
-
           <button
             onClick={() => setFilterType("ALL")}
-            className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300
-            ${filterType === "ALL"
-                ? "bg-linear-to-r from-purple-600 to-pink-500 text-white shadow-lg"
-                : "text-gray-400 hover:text-white"}
-          `}
+            className={`px-5 py-2 rounded-full ${
+              filterType === "ALL"
+                ? "bg-purple-600 text-white"
+                : "text-gray-400"
+            }`}
           >
             All Movies
           </button>
 
           <button
             onClick={() => setFilterType("NEPAL")}
-            className={`px-5 py-2 text-sm font-medium rounded-full transition-all duration-300
-            ${filterType === "NEPAL"
-                ? "bg-linear-to-r from-purple-600 to-pink-500 text-white shadow-lg"
-                : "text-gray-400 hover:text-white"}
-          `}
+            className={`px-5 py-2 rounded-full ${
+              filterType === "NEPAL"
+                ? "bg-purple-600 text-white"
+                : "text-gray-400"
+            }`}
           >
             Made in Nepal
           </button>
-
         </div>
       </div>
 
-      {/* TITLE + SEARCH */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-10">
+      {/* SEARCH */}
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-2xl font-bold text-white">
+          {filterType === "ALL" ? "All Movies" : "Nepali Movies"}
+        </h2>
 
-        {/* Title */}
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-bold">
-            {filterType === "ALL"
-              ? "All Available Movies"
-              : "Made in Nepal"}
-          </h2>
-          <p className="text-gray-400 text-sm mt-1">
-            Discover premium cinematic content
-          </p>
-        </div>
-
-        {/* Search */}
-        <div className="relative w-full md:w-72">
-          <FaSearch className="absolute left-3 top-3 text-gray-400 text-sm" />
+        <div className="relative w-64">
+          <FaSearch className="absolute left-3 top-3 text-gray-400" />
           <input
             type="text"
-            placeholder="Search movies..."
+            placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[#1C1C2E] pl-10 pr-4 py-2 rounded-xl outline-none focus:ring-2 focus:ring-purple-600 transition duration-300"
+            className="w-full bg-[#1C1C2E] pl-10 pr-4 py-2 rounded-lg"
           />
         </div>
-
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5 sm:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
         {filteredMovies.map((movie) => (
           <div
             key={movie.id}
-            className="group cursor-pointer transition duration-300"
+            onClick={() => navigate(`/watch/${movie.id}`)}
+            className="cursor-pointer group"
           >
-            {/* Poster */}
-            <div className="rounded-xl overflow-hidden shadow-md group-hover:shadow-2xl transition duration-300">
-              <img
-                src={movie.image}
-                alt={movie.title}
-                className="w-full h-64 sm:h-72 object-cover transform group-hover:scale-105 transition duration-300"
-              />
-            </div>
+            <img
+              src={movie.image}
+              alt={movie.title}
+              className="rounded-lg h-64 w-full object-cover group-hover:scale-105 transition"
+            />
 
-            {/* Info */}
-            <div className="mt-3">
-              <h3 className="text-sm font-medium truncate">
-                {movie.title}
-              </h3>
-              <p className="text-xs text-gray-400">
-                {movie.year} • {movie.country}
-              </p>
-            </div>
+            <h3 className="text-sm mt-2 text-white truncate">
+              {movie.title}
+            </h3>
+
+            <p className="text-xs text-gray-400">
+              {movie.year}
+            </p>
           </div>
         ))}
-
-        {filteredMovies.length === 0 && (
-          <p className="col-span-full text-center text-gray-400 mt-10">
-            No movies found.
-          </p>
-        )}
       </div>
-
     </div>
   );
 };
