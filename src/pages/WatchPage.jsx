@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import RecommendedMovies from "../components/common/RecommendedMovies";
 import {
   FaPlay,
   FaPause,
@@ -191,6 +192,7 @@ const WatchPage = () => {
           Saints & Sinners - Episode {id}
         </h1>
       </div>
+      <RecommendedMovies currentMovieId={id} />
     </div>
   );
 };
