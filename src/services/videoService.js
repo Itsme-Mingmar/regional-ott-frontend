@@ -15,3 +15,21 @@ export const getNepaliMovies = async () => {
   });
   return res.data.data;
 };
+export const uploadVideo = async (formData) => {
+  try {
+    const res = await axios.post(
+      `${API_URL}/video/upload`,
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return res.data.data;
+  } catch (error) {
+    throw error.response?.data?.message || "Upload failed";
+  }
+};
