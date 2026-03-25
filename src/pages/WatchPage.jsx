@@ -10,6 +10,7 @@ import {
   FaVolumeMute,
   FaTimes,
 } from "react-icons/fa";
+import { startWatch, getVideoById } from "../services/watchService";
 
 const WatchPage = () => {
   const { id } = useParams();
@@ -23,6 +24,8 @@ const WatchPage = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [videoData, setVideoData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -35,17 +38,39 @@ const WatchPage = () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
+  useEffect(() => {
+    const fetchVideo = async () => {
+      try {
+        setLoading(true);
+        const data = await getVideoById(id);
+        setVideoData(data);
+      } catch (err) {
+        console.error("Error fetching video:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const togglePlay = () => {
+    fetchVideo();
+  }, [id]);
+
+  const togglePlay = async () => {
     if (!videoRef.current) return;
 
     if (isPlaying) {
       videoRef.current.pause();
+      setIsPlaying(false);
     } else {
       videoRef.current.play();
-    }
+      setIsPlaying(true);
 
-    setIsPlaying(!isPlaying);
+      // 🔥 Call backend when user starts watching
+      try {
+        await startWatch(id);
+      } catch (err) {
+        console.error("startWatch error:", err);
+      }
+    }
   };
 
   // Update progress
@@ -93,10 +118,12 @@ const WatchPage = () => {
       document.exitFullscreen();
     }
   };
-
+  if (loading || !videoData) {
+    return <div className="text-white text-center mt-20">Loading...</div>;
+  }
   return (
     <div className="min-h-screen bg-[#0F0F1A] text-white pt-20 px-6">
-      
+
       {/*  Container */}
       <div
         ref={containerRef}
@@ -107,7 +134,7 @@ const WatchPage = () => {
         {/* Video Height Behavior */}
         <video
           ref={videoRef}
-          src="https://www.w3schools.com/html/mov_bbb.mp4"
+          src={videoData?.videoUrl}
           className={`w-full transition-all duration-300
             ${isFullscreen ? "h-screen object-contain" : "h-[500px] object-cover"}
           `}
@@ -127,7 +154,7 @@ const WatchPage = () => {
 
         {/* Controls Overlay */}
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4">
-          
+
           {/* Progress Bar */}
           <div className="flex items-center gap-3 mb-3">
             <span className="text-xs w-12">
@@ -150,7 +177,7 @@ const WatchPage = () => {
 
           {/* Bottom Controls */}
           <div className="flex justify-between items-center">
-            
+
             <div className="flex items-center gap-4">
               {/* Play Pause */}
               <button
@@ -189,7 +216,7 @@ const WatchPage = () => {
       {/* Title */}
       <div className="mt-6">
         <h1 className="text-3xl font-bold pb-10">
-          Saints & Sinners - Episode {id}
+          {videoData.title}
         </h1>
       </div>
       <RecommendedMovies currentMovieId={id} />
