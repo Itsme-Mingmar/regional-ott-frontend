@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { uploadVideo } from "../../services/videoService";
 
 const UploadVideo = () => {
 
@@ -15,28 +16,60 @@ const UploadVideo = () => {
 
   const [video, setVideo] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
+    if (!form.title || !form.description || !form.category) {
+      return alert("Please fill all required fields");
+    }
 
-    const data = new FormData();
+    if (!video || !thumbnail) {
+      return alert("Please upload both video and thumbnail");
+    }
+    setUploading(true);
 
-    Object.keys(form).forEach((key) => {
-      data.append(key, form[key]);
-    });
+    try {
+      const data = new FormData();
 
-    data.append("video", video);
-    data.append("thumbnail", thumbnail);
+      Object.keys(form).forEach((key) => {
+        data.append(key, form[key]);
+      });
 
-    console.log("Upload Payload:", form);
-    console.log("Video File:", video);
-    console.log("Thumbnail:", thumbnail);
+      data.append("video", video);
+      data.append("thumbnail", thumbnail);
 
-    alert("Dummy Upload Success");
+      await uploadVideo(data);
+
+      alert(" Video uploaded successfully");
+
+      // Reset form
+      setForm({
+        title: "",
+        description: "",
+        genre: "",
+        language: "",
+        releaseYear: "",
+        duration: "",
+        category: "",
+        province: ""
+      });
+
+      setVideo(null);
+      setThumbnail(null);
+
+    } catch (err) {
+      console.error(err);
+      alert(" Upload failed");
+    }
+    finally {
+      setUploading(false); 
+    }
+
   };
 
   return (
@@ -91,12 +124,20 @@ const UploadVideo = () => {
               className="w-full p-3 bg-[#141427] rounded-lg"
             />
 
-            <input
+            <select
               name="province"
-              placeholder="Province (Optional for movies)"
               onChange={handleChange}
               className="w-full p-3 bg-[#141427] rounded-lg"
-            />
+            >
+              <option value="">Select Province</option>
+              <option value="koshi">Koshi</option>
+              <option value="madhesh">Madhesh</option>
+              <option value="bagmati">Bagmati</option>
+              <option value="gandaki">Gandaki</option>
+              <option value="lumbini">Lumbini</option>
+              <option value="karnali">Karnali</option>
+              <option value="sudurpashchim">Sudurpashchim</option>
+            </select>
 
           </div>
 
@@ -149,8 +190,11 @@ const UploadVideo = () => {
 
           {/* BUTTON */}
           <div className="flex justify-center md:justify-end pt-4">
-            <button className="w-full md:w-auto bg-purple-700 hover:bg-purple-600 px-8 py-3 rounded-lg font-medium transition">
-              Upload Video
+            <button
+              disabled={uploading}
+              className="w-full md:w-auto bg-purple-700 hover:bg-purple-600 px-8 py-3 rounded-lg font-medium transition disabled:opacity-50"
+            >
+              {uploading ? "Uploading..." : "Upload Video"}
             </button>
           </div>
 
