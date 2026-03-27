@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FiArrowLeft } from "react-icons/fi";
+import { updateVideo } from "../../services/videoService";
 
-const UpdateVideo = ({ video, goBack }) => {
+const UpdateVideo = ({ video, goBack, onSuccess }) => {
 
-  const [form,setForm] = useState({
+  const [form, setForm] = useState({
     title: video.title || "",
     description: video.description || "",
     genre: video.genre || "",
@@ -14,34 +15,39 @@ const UpdateVideo = ({ video, goBack }) => {
     province: video.province || ""
   });
 
-  const [videoFile,setVideoFile] = useState(null);
-  const [thumbnail,setThumbnail] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
 
-  const handleChange = (e)=>{
-    setForm({...form,[e.target.name]:e.target.value});
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleUpdate = (e)=>{
-    e.preventDefault();
+  const handleUpdate = async (e) => {
+  e.preventDefault();
 
+  try {
     const data = new FormData();
 
-    Object.keys(form).forEach(key=>{
-      data.append(key,form[key]);
+    Object.keys(form).forEach((key) => {
+      data.append(key, form[key]);
     });
 
-    if(videoFile){
-      data.append("video",videoFile);
+    if (videoFile) data.append("video", videoFile);
+    if (thumbnail) data.append("thumbnail", thumbnail);
+
+    const res = await updateVideo(video._id, data);
+
+    alert("Updated successfully");
+
+    if (onSuccess) {
+      onSuccess(res.data); 
     }
 
-    if(thumbnail){
-      data.append("thumbnail",thumbnail);
-    }
-
-    console.log("Dummy Update Payload",form);
-
-    alert("Dummy Update Success");
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  }
+};
 
   return (
 
@@ -54,7 +60,7 @@ const UpdateVideo = ({ video, goBack }) => {
           onClick={goBack}
           className="flex items-center gap-2 mb-6 text-purple-400 hover:text-purple-300"
         >
-          <FiArrowLeft size={18}/>
+          <FiArrowLeft size={18} />
           Back
         </button>
 
@@ -155,7 +161,7 @@ const UpdateVideo = ({ video, goBack }) => {
 
               <input
                 type="file"
-                onChange={(e)=>setVideoFile(e.target.files[0])}
+                onChange={(e) => setVideoFile(e.target.files[0])}
                 className="block mt-1"
               />
             </div>
@@ -167,7 +173,7 @@ const UpdateVideo = ({ video, goBack }) => {
 
               <input
                 type="file"
-                onChange={(e)=>setThumbnail(e.target.files[0])}
+                onChange={(e) => setThumbnail(e.target.files[0])}
                 className="block mt-1"
               />
             </div>
