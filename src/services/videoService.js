@@ -22,9 +22,6 @@ export const uploadVideo = async (formData) => {
       formData,
       {
         withCredentials: true,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       }
     );
 
@@ -32,4 +29,27 @@ export const uploadVideo = async (formData) => {
   } catch (error) {
     throw error.response?.data?.message || "Upload failed";
   }
+};
+// GET ALL
+export const getAllVideos = async () => {
+  const res = await axios.get(`${API_URL}/video`, {
+    withCredentials: true
+  });
+  return res.data.data;
+};
+
+// UPDATE
+export const updateVideo = async (id, data) => {
+  const res = await axios.put(`${API_URL}/video/${id}`, data, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
+// DELETE
+export const deleteVideo = async (id) => {
+  const res = await axios.delete(`${API_URL}/video/${id}`, {
+    withCredentials: true,
+  });
+  return res.data;
 };
