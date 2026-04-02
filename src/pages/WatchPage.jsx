@@ -9,6 +9,8 @@ import {
   FaVolumeUp,
   FaVolumeMute,
   FaTimes,
+  FaBackward,
+  FaForward,
 } from "react-icons/fa";
 import { startWatch, getVideoById } from "../services/watchService";
 
@@ -99,6 +101,14 @@ const WatchPage = () => {
     videoRef.current.volume = value;
     setVolume(value);
   };
+  // Skip forward/backward
+  const skipTime = (seconds) => {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = Math.min(
+      Math.max(videoRef.current.currentTime + seconds, 0),
+      duration
+    );
+  };
 
   // Format time
   const formatTime = (time) => {
@@ -185,6 +195,23 @@ const WatchPage = () => {
                 className="text-xl hover:scale-110 transition"
               >
                 {isPlaying ? <FaPause /> : <FaPlay />}
+              </button>
+              {/* Skip Backward */}
+              <button
+                onClick={() => skipTime(-5)}
+                className="text-sm font-bold hover:scale-110 transition"
+                title="Rewind 5s"
+              >
+                <FaBackward />
+              </button>
+
+              {/* Skip Forward */}
+              <button
+                onClick={() => skipTime(5)}
+                className="text-sm font-bold hover:scale-110 transition"
+                title="Forward 5s"
+              >
+                <FaForward />
               </button>
 
               {/* Volume */}
