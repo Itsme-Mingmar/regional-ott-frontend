@@ -7,6 +7,8 @@ const ManageVideos = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
+  const [toast, setToast] = useState(false);
 
   // FETCH VIDEOS
   useEffect(() => {
@@ -28,14 +30,17 @@ const ManageVideos = () => {
   const handleDelete = async (id) => {
     if (!confirm("Delete this video?")) return;
 
+    setDeletingId(id);
     try {
       await deleteVideo(id);
-
-      // remove from UI instantly
       setVideos((prev) => prev.filter((v) => v._id !== id));
+      setToast(true);
+      setTimeout(() => setToast(false), 3000);
     } catch (err) {
       console.error(err);
       alert("Delete failed");
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -90,14 +95,25 @@ const ManageVideos = () => {
 
               <button
                 onClick={() => handleDelete(video._id)}
-                className="bg-red-600 px-4 py-2 rounded"
+                disabled={deletingId === video._id}
+                className={`px-4 py-2 rounded transition ${deletingId === video._id
+                  ? "bg-red-400 cursor-not-allowed opacity-60"
+                  : "bg-red-600 hover:bg-red-700"
+                  }`}
               >
-                Delete
+                {deletingId === video._id ? "Deleting..." : "Delete"}
               </button>
             </div>
           </div>
         ))}
       </div>
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in z-50">
+          <span>✅</span>
+          <span>Video deleted successfully!</span>
+        </div>
+      )}
     </div>
   );
 };
