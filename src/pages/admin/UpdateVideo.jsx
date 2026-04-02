@@ -17,37 +17,34 @@ const UpdateVideo = ({ video, goBack, onSuccess }) => {
 
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
+  const [updating, setUpdating] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleUpdate = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
+    setUpdating(true);
 
-  try {
-    const data = new FormData();
+    try {
+      const data = new FormData();
+      Object.keys(form).forEach((key) => data.append(key, form[key]));
+      if (videoFile) data.append("video", videoFile);
+      if (thumbnail) data.append("thumbnail", thumbnail);
 
-    Object.keys(form).forEach((key) => {
-      data.append(key, form[key]);
-    });
+      const res = await updateVideo(video._id, data);
 
-    if (videoFile) data.append("video", videoFile);
-    if (thumbnail) data.append("thumbnail", thumbnail);
+      if (onSuccess) onSuccess(res.data);
+      goBack(); // ← redirect back to manage page after success
 
-    const res = await updateVideo(video._id, data);
-
-    alert("Updated successfully");
-
-    if (onSuccess) {
-      onSuccess(res.data); 
+    } catch (err) {
+      console.error(err);
+      alert("Update failed");
+    } finally {
+      setUpdating(false);
     }
-
-  } catch (err) {
-    console.error(err);
-    alert("Update failed");
-  }
-};
+  };
 
   return (
 
@@ -183,9 +180,13 @@ const UpdateVideo = ({ video, goBack, onSuccess }) => {
           {/* Button */}
           <button
             type="submit"
-            className="w-full sm:w-auto bg-purple-700 hover:bg-purple-600 transition px-6 py-3 rounded-lg font-medium"
+            disabled={updating}
+            className={`w-full sm:w-auto px-6 py-3 rounded-lg font-medium transition ${updating
+                ? "bg-purple-400 cursor-not-allowed opacity-60"
+                : "bg-purple-700 hover:bg-purple-600"
+              }`}
           >
-            Update Video
+            {updating ? "Updating..." : "Update Video"}
           </button>
 
         </form>
