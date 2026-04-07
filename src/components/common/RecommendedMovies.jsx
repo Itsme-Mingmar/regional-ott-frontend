@@ -1,36 +1,52 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const RecommendedMovies = ({ currentMovieId }) => {
   const navigate = useNavigate();
+  const [movies, setMovies] = useState([]);
 
-  // 🔥 For now using dummy data (later from backend)
-  const movies = [
-    { id: 2, title: "Echoes of Kathmandu", image: "https://picsum.photos/300/450?2" },
-    { id: 3, title: "Mountain Warriors", image: "https://picsum.photos/300/450?3" },
-    { id: 4, title: "Silent Valley", image: "https://picsum.photos/300/450?4" },
-    { id: 5, title: "Sacred Rivers", image: "https://picsum.photos/300/450?5" },
-  ];
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/recommend", {
+          withCredentials: true
+        });
+        setMovies(res.data);
+      } catch (err) {
+        console.error("Failed to fetch recommendations", err);
+      }
+    };
 
-  // ❗ remove current movie
-  const filtered = movies.filter(m => m.id !== Number(currentMovieId));
+    fetchRecommendations();
+  }, []);
+
+  // remove current movie
+  const filtered = movies.filter(
+    (m) => m._id !== currentMovieId
+  );
 
   return (
     <div className="mt-12 pb-6">
-      <h2 className="text-xl font-semibold mb-4">Recommended for you</h2>
+      <h2 className="text-xl font-semibold mb-4">
+        Recommended for you
+      </h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {filtered.slice(0, 4).map((movie) => (
           <div
-            key={movie.id}
-            onClick={() => navigate(`/watch/${movie.id}`)}
+            key={movie._id}
+            onClick={() => navigate(`/watch/${movie._id}`)}
             className="cursor-pointer group"
           >
             <img
-              src={movie.image}
+              src={movie.thumbnailUrl}
               alt={movie.title}
               className="rounded-lg h-48 w-full object-cover group-hover:scale-105 transition"
             />
-            <p className="text-sm mt-2 truncate">{movie.title}</p>
+            <p className="text-sm mt-2 truncate">
+              {movie.title}
+            </p>
           </div>
         ))}
       </div>
