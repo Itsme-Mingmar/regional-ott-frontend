@@ -78,8 +78,10 @@ const Section = ({ title, province }) => {
         {videos.map((video) => (
           <div
             key={video._id}
-            onClick={() => navigate(`/watch/${video._id}`)}
-            className="min-w-62.5 bg-[#1C1C2E] rounded-xl overflow-hidden hover:scale-105 hover:shadow-xl cursor-pointer transition"
+            onClick={() => {
+              localStorage.setItem("activeProvince", province); 
+              navigate(`/watch/${video._id}`);
+            }} className="min-w-62.5 bg-[#1C1C2E] rounded-xl overflow-hidden hover:scale-105 hover:shadow-xl cursor-pointer transition"
           >
             <img
               src={video.thumbnailUrl}
