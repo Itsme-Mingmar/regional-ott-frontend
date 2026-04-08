@@ -20,6 +20,7 @@ const HomePage = () => {
 
   useEffect(() => {
     const storedAuth = localStorage.getItem("auth");
+    const storedProvince = localStorage.getItem("activeProvince");
 
     if (storedAuth) {
       const parsedAuth = JSON.parse(storedAuth);
@@ -29,7 +30,12 @@ const HomePage = () => {
 
       if (userData.planType === "standard") {
         setActiveProvince(userData.selectedProvince?.slug);
+        return; // 🔥 STOP here
       }
+    }
+
+    if (storedProvince) {
+      setActiveProvince(storedProvince);
     }
   }, []);
 

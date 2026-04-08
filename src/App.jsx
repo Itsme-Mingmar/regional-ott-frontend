@@ -9,18 +9,21 @@ import WatchPage from "./pages/WatchPage";
 import PlaceDetails from "./pages/PlaceDetails";
 import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import PaymentSuccess from "./pages/subscription/paymentSuccess"; 
+import PaymentSuccess from "./pages/subscription/paymentSuccess";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/Publicroute";
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<LandingPage />} />
+          <Route element={<PublicRoute />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/signin" element={<SignInPage />} />
+          </Route>
           <Route path="/subscribe" element={<SubscribePage />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/signin" element={<SignInPage />} />
 
           <Route element={<ProtectedRoute />}>
 
