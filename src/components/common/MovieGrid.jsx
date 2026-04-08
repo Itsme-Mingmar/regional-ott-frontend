@@ -63,22 +63,20 @@ const MovieGrid = () => {
         <div className="inline-flex bg-[#1C1C2E] p-1 rounded-full">
           <button
             onClick={() => setFilterType("ALL")}
-            className={`px-5 py-2 rounded-full ${
-              filterType === "ALL"
+            className={`px-5 py-2 rounded-full ${filterType === "ALL"
                 ? "bg-purple-600 text-white"
                 : "text-gray-400"
-            }`}
+              }`}
           >
             All Movies
           </button>
 
           <button
             onClick={() => setFilterType("NEPAL")}
-            className={`px-5 py-2 rounded-full ${
-              filterType === "NEPAL"
+            className={`px-5 py-2 rounded-full ${filterType === "NEPAL"
                 ? "bg-purple-600 text-white"
                 : "text-gray-400"
-            }`}
+              }`}
           >
             Made in Nepal
           </button>
@@ -108,8 +106,10 @@ const MovieGrid = () => {
         {filteredMovies.map((movie) => (
           <div
             key={movie.id}
-            onClick={() => navigate(`/watch/${movie.id}`)}
-            className="cursor-pointer group"
+            onClick={() => {
+              localStorage.setItem("activeProvince", "Global Movies"); 
+              navigate(`/watch/${movie.id}`);
+            }} className="cursor-pointer group"
           >
             <img
               src={movie.image}
