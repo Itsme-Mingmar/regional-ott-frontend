@@ -45,6 +45,7 @@ const WatchPage = () => {
       try {
         setLoading(true);
         const data = await getVideoById(id);
+        console.log("VIDEO DATA:", data);
         setVideoData(data);
       } catch (err) {
         console.error("Error fetching video:", err);
@@ -246,8 +247,9 @@ const WatchPage = () => {
           {videoData.title}
         </h1>
       </div>
-      <RecommendedMovies currentMovieId={id} />
-    </div>
+      {videoData.category === "movie" && (
+        <RecommendedMovies currentMovieId={id} />
+      )}    </div>
   );
 };
 
