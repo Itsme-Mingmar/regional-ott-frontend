@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { motion } from "framer-motion";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { getAllMovies, getNepaliMovies } from "../../services/videoService";
@@ -64,8 +65,8 @@ const MovieGrid = () => {
           <button
             onClick={() => setFilterType("ALL")}
             className={`px-5 py-2 rounded-full ${filterType === "ALL"
-                ? "bg-purple-600 text-white"
-                : "text-gray-400"
+              ? "bg-purple-600 text-white"
+              : "text-gray-400"
               }`}
           >
             All Movies
@@ -74,8 +75,8 @@ const MovieGrid = () => {
           <button
             onClick={() => setFilterType("NEPAL")}
             className={`px-5 py-2 rounded-full ${filterType === "NEPAL"
-                ? "bg-purple-600 text-white"
-                : "text-gray-400"
+              ? "bg-purple-600 text-white"
+              : "text-gray-400"
               }`}
           >
             Made in Nepal
@@ -102,29 +103,45 @@ const MovieGrid = () => {
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
-        {filteredMovies.map((movie) => (
-          <div
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+        {filteredMovies.map((movie, index) => (
+          <motion.div
             key={movie.id}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            whileHover={{ scale: 1.07, y: -8 }}
+            className="cursor-pointer group"
             onClick={() => {
-              localStorage.setItem("activeProvince", "Global Movies"); 
+              localStorage.setItem("activeProvince", "Global Movies");
               navigate(`/watch/${movie.id}`);
-            }} className="cursor-pointer group"
+            }}
           >
-            <img
-              src={movie.image}
-              alt={movie.title}
-              className="rounded-lg h-64 w-full object-cover group-hover:scale-105 transition"
-            />
+            {/* CARD */}
+            <div className="relative rounded-2xl overflow-hidden shadow-md bg-[#1C1C2E]">
 
-            <h3 className="text-sm mt-2 text-white truncate">
-              {movie.title}
-            </h3>
+              {/* POSTER IMAGE (🔥 BIG FIX) */}
+              <img
+                src={movie.image}
+                alt={movie.title}
+                className="w-full aspect-[2/3] object-cover transition duration-500 group-hover:scale-110"
+              />
 
-            <p className="text-xs text-gray-400">
-              {movie.year}
-            </p>
-          </div>
+              {/* DARK OVERLAY */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-90 group-hover:opacity-100 transition" />
+
+              {/* CONTENT */}
+              <div className="absolute bottom-4 left-4 right-4">
+                <h3 className="text-base font-semibold text-white line-clamp-2">
+                  {movie.title}
+                </h3>
+                <p className="text-sm text-gray-300 mt-1">
+                  {movie.year}
+                </p>
+              </div>
+
+            </div>
+          </motion.div>
         ))}
       </div>
     </div>
