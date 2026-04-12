@@ -1,6 +1,7 @@
 import { useState } from "react";
 import UploadVideo from "./UploadVideo";
 import ManageVideos from "./ManageVideos";
+import ManageUsers from "./ManageUsers";
 
 const AdminDashboard = () => {
 
@@ -70,6 +71,20 @@ const AdminDashboard = () => {
             Manage Videos
           </button>
 
+          <button
+            onClick={()=>{
+              setActivePage("users");
+              setSidebarOpen(false);
+            }}
+            className={`w-full text-left p-3 rounded ${
+              activePage==="users"
+              ? "bg-purple-700"
+              : "hover:bg-[#2a2a40]"
+            }`}
+          >
+            Manage Users
+          </button>
+
         </div>
 
       </div>
@@ -79,6 +94,7 @@ const AdminDashboard = () => {
 
         {activePage==="upload" && <UploadVideo />}
         {activePage==="manage" && <ManageVideos />}
+        {activePage==="users" && <ManageUsers />}
 
       </div>
 

@@ -109,3 +109,44 @@ export const updateUserPlan = async (data) => {
     );
   }
 };
+// GET ALL USERS (ADMIN)
+export const getAllUsers = async () => {
+  try {
+    const res = await API.get("/all");
+    return res.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to fetch users"
+    );
+  }
+};
+
+// DELETE USER (ADMIN)
+export const deleteUser = async (userId) => {
+  try {
+    const res = await API.delete(`/${userId}`);
+    return res.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to delete user"
+    );
+  }
+};
+
+// UPDATE USER ROLE (ADMIN)
+export const updateUserRole = async (userId, role) => {
+  try {
+    const res = await API.put(`/${userId}/role`, { role });
+    return res.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      error.message ||
+      "Failed to update user role"
+    );
+  }
+};
