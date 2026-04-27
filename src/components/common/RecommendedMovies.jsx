@@ -9,7 +9,7 @@ const RecommendedMovies = ({ currentMovieId }) => {
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/recommend", {
+        const res = await axios.get("https://regional-ott-backend-6.onrender.com/api/recommend", {
           withCredentials: true
         });
         setMovies(res.data);
