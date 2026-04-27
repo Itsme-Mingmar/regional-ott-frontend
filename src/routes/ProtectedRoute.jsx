@@ -1,15 +1,15 @@
-import { Navigate,Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const { isLoggedIn } = useAuth();
   const location = useLocation();
 
-  if (!isLoggedIn) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+  const user = localStorage.getItem("auth");
+
+  if (!user) {
+    return <Navigate to="/signin" state={{ from: location }} replace />;
   }
 
-  return <Outlet />; 
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
