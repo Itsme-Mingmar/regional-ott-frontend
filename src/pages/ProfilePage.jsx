@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { getUserProfile } from "../services/authService";
@@ -7,6 +8,7 @@ import { getUserProfile } from "../services/authService";
 const ProfilePage = () => {
 
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -22,10 +24,12 @@ const ProfilePage = () => {
     fetchProfile();
   }, []);
   const auth = useAuth();
+
   const handleLogout = async () => {
     try {
       await logoutUser();   // backend + localStorage clear
       auth.logout();        // clear context (important)
+      navigate("/signin"); 
     } catch (error) {
       console.error("Logout failed:", error);
     }
