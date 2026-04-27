@@ -5,8 +5,8 @@ const AUTH_STORAGE_KEY = "auth";
 const AuthContext = createContext({
   user: null,
   isLoggedIn: false,
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
 });
 
 export const AuthProvider = ({ children }) => {
@@ -24,12 +24,37 @@ export const AuthProvider = ({ children }) => {
       }
     }
   }, []);
+  useEffect(() => {
+    const syncAuth = () => {
+      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+
+      if (!stored) {
+        setUser(null); // 
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(stored);
+        setUser(parsed.user);
+      } catch {
+        setUser(null);
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+      }
+    };
+
+    // Listen for changes (works across tabs + manual clear)
+    window.addEventListener("storage", syncAuth);
+
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+    };
+  }, []);
 
   const login = (newUser) => {
     setUser(newUser);
     localStorage.setItem(
       AUTH_STORAGE_KEY,
-      JSON.stringify({ user: newUser})
+      JSON.stringify({ user: newUser })
     );
   };
 
