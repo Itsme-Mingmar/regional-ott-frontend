@@ -12,13 +12,13 @@ const API = axios.create({
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // clear user data only
+    if (error.response?.status === 401 || error.response?.status === 500) {
       localStorage.removeItem("auth");
 
-      // redirect to login
+      // FORCE FULL RESET (IMPORTANT)
       window.location.href = "/signin";
     }
+
     return Promise.reject(error);
   }
 );
