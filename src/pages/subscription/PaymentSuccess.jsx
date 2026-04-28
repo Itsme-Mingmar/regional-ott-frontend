@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
   const called = useRef(false);
 
   useEffect(() => {
-    if (called.current) return; 
+    if (called.current) return;
     called.current = true;
 
     const pidx = new URLSearchParams(window.location.search).get("pidx");
@@ -26,15 +26,22 @@ const PaymentSuccess = () => {
         const res = await axios.post(
           `${API_URL}/payment/verify`,
           { pidx },
-          { withCredentials: true } // ✅ IMPORTANT
+          { withCredentials: true }
         );
 
-        if (res.data.success) {
-          login(res.data.user, "cookie"); // ✅ FIX
-          navigate("/home");
-        } else {
+        if (!res.data.success) {
           navigate("/subscribe?payment=failed");
+          return;
         }
+
+        // ✅ USE THIS (no /profile)
+        const user = res.data.user;
+
+        localStorage.setItem("auth", JSON.stringify(user));
+        login(user, "cookie");
+
+        navigate("/home");
+
       } catch (err) {
         navigate("/subscribe?payment=error");
       }
