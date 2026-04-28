@@ -28,10 +28,13 @@ export const registerUser = async (userData) => {
   try {
     const res = await API.post("/registerUser", userData);
 
-    // store only user data (NO token needed)
-    localStorage.setItem("auth", JSON.stringify(res.data.data));
+    const user = res.data.data;
 
-    return res.data;
+    // ✅ update UI immediately
+    localStorage.setItem("auth", JSON.stringify(user));
+
+    return user;
+
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||
