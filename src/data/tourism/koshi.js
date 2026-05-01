@@ -8,7 +8,6 @@ import kanchenjunga3 from "../../assets/tourism/koshi/Kangchenjunga.jpg";
 
 import koshi1 from "../../assets/tourism/koshi/Koshi2.jpg";
 import koshi2 from "../../assets/tourism/koshi/koshi3.jpg";
-import koshi3 from "../../assets/tourism/koshi/koshi_Tappu.jpg";
 
 import ilam1 from "../../assets/tourism/koshi/ilam.jpg";
 import ilam2 from "../../assets/tourism/koshi/ilam2.jpg";
@@ -53,7 +52,7 @@ export const koshiTourism = [
         slug: "koshi-tappu-wildlife-reserve",
         name: "Koshi Tappu Wildlife Reserve",
         province: "koshi",
-        images: [koshi1, koshi2, koshi3],
+        images: [koshi1, koshi2],
         description:
             "Koshi Tappu Wildlife Reserve was established in 1976 and covers 176 square kilometers in Sunsari, Saptari, and Udayapur districts. It is Nepal’s primary wetland reserve and was designated a Ramsar Site in 1987 due to its international importance for bird conservation. The reserve is home to the last remaining population of wild water buffalo (Arna) in Nepal and hosts over 500 species of birds, making it a major destination for birdwatchers. The reserve lies along the Sapta Koshi River floodplain and features grasslands, marshes, and riverine forests.",
         bestTime: "October to March",
