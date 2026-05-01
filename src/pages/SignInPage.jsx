@@ -1,28 +1,33 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { loginUser } from "../services/authService";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser, checkEmail } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
-import { checkEmail } from "../services/authService";
 
 const SignInPage = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  
+  const [loadingEmail, setLoadingEmail] = useState(false);
+  const [loadingLogin, setLoadingLogin] = useState(false);
+
   const navigate = useNavigate();
   const auth = useAuth();
-
 
   const handleEmailCheck = async () => {
     if (!email.trim()) return;
 
     try {
+      setLoadingEmail(true); 
       await checkEmail({ email });
       setError("");
       setStep(2);
     } catch (err) {
       setError("No account found with this email. Please sign up first.");
+    } finally {
+      setLoadingEmail(false); 
     }
   };
 
@@ -30,16 +35,19 @@ const SignInPage = () => {
     if (!password.trim()) return;
 
     try {
+      setLoadingLogin(true); 
+
       const response = await loginUser({ email, password });
 
-      const user = response.data; // ✅ FIXED
-      const token = response.data.token; // ✅ FIXED
+      const user = response.data;
+      const token = response.data.token;
 
       auth.login(user, token);
-      navigate("/home"); 
-
+      navigate("/home");
     } catch (error) {
       setError(error.message || "Login failed");
+    } finally {
+      setLoadingLogin(false); 
     }
   };
 
@@ -67,15 +75,15 @@ const SignInPage = () => {
             )}
 
             <button
-              disabled={!email}
+              disabled={!email || loadingEmail}
               onClick={handleEmailCheck}
               className={`w-full mt-6 py-3 rounded-lg font-semibold transition
-                ${email
-                  ? "bg-[#7C3AED] hover:bg-purple-500"
-                  : "bg-gray-600 cursor-not-allowed"}
+                ${(!email || loadingEmail)
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-[#7C3AED] hover:bg-purple-500"}
               `}
             >
-              Continue
+              {loadingEmail ? "Processing..." : "Continue"}
             </button>
           </>
         )}
@@ -94,25 +102,27 @@ const SignInPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full p-3 rounded-lg bg-[#0F0F1A] border border-gray-700 focus:border-[#7C3AED] outline-none"
             />
+
             {error && (
               <p className="text-red-500 text-sm mt-2">{error}</p>
             )}
 
             <button
-              disabled={!password}
+              disabled={!password || loadingLogin}
               onClick={handleLogin}
               className={`w-full mt-6 py-3 rounded-lg font-semibold transition
-                ${password
-                  ? "bg-[#7C3AED] hover:bg-purple-500"
-                  : "bg-gray-600 cursor-not-allowed"}
+                ${(!password || loadingLogin)
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-[#7C3AED] hover:bg-purple-500"}
               `}
             >
-              Sign In
+              {loadingLogin ? "Processing..." : "Sign In"}
             </button>
 
             <button
               onClick={() => setStep(1)}
-              className="mt-4 text-sm text-gray-400 hover:text-white"
+              disabled={loadingLogin}
+              className="mt-4 text-sm text-gray-400 hover:text-white disabled:opacity-50"
             >
               ← Change Email
             </button>
@@ -123,7 +133,10 @@ const SignInPage = () => {
         <div className="mt-8 text-center text-sm text-gray-400">
           <p>
             Don't have an account?{" "}
-            <Link to="/subscribe" className="text-[#22D3EE] cursor-pointer hover:underline">
+            <Link
+              to="/subscribe"
+              className="text-[#22D3EE] cursor-pointer hover:underline"
+            >
               Sign Up
             </Link>
           </p>
