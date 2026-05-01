@@ -9,7 +9,7 @@ import WatchPage from "./pages/WatchPage";
 import PlaceDetails from "./pages/PlaceDetails";
 import ProfilePage from "./pages/ProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import PaymentSuccess from "./pages/subscription/paymentSuccess";
+import PaymentSuccess from "./pages/subscription/PaymentSuccess";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/Publicroute";
 function App() {
