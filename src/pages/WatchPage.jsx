@@ -40,6 +40,7 @@ const WatchPage = () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
+
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -47,6 +48,10 @@ const WatchPage = () => {
         const data = await getVideoById(id);
         console.log("VIDEO DATA:", data);
         setVideoData(data);
+
+        // ✅ Record watch history immediately on page load
+        // so recommendations refresh based on current video
+        await startWatch(id);
       } catch (err) {
         console.error("Error fetching video:", err);
       } finally {
@@ -66,13 +71,7 @@ const WatchPage = () => {
     } else {
       videoRef.current.play();
       setIsPlaying(true);
-
-      // 🔥 Call backend when user starts watching
-      try {
-        await startWatch(id);
-      } catch (err) {
-        console.error("startWatch error:", err);
-      }
+      // ✅ removed startWatch from here — handled in useEffect above
     }
   };
 
@@ -102,6 +101,7 @@ const WatchPage = () => {
     videoRef.current.volume = value;
     setVolume(value);
   };
+
   // Skip forward/backward
   const skipTime = (seconds) => {
     if (!videoRef.current) return;
@@ -129,20 +129,22 @@ const WatchPage = () => {
       document.exitFullscreen();
     }
   };
+
   if (loading || !videoData) {
     return <div className="text-white text-center mt-20">Loading...</div>;
   }
+
   return (
     <div className="min-h-screen bg-[#0F0F1A] text-white pt-20 px-6">
 
-      {/*  Container */}
+      {/* Container */}
       <div
         ref={containerRef}
         className={`relative bg-black overflow-hidden transition-all duration-300
           ${isFullscreen ? "flex items-center justify-center h-screen" : "rounded-xl"}
         `}
       >
-        {/* Video Height Behavior */}
+        {/* Video */}
         <video
           ref={videoRef}
           src={videoData?.videoUrl}
@@ -197,6 +199,7 @@ const WatchPage = () => {
               >
                 {isPlaying ? <FaPause /> : <FaPlay />}
               </button>
+
               {/* Skip Backward */}
               <button
                 onClick={() => skipTime(-5)}
@@ -247,9 +250,11 @@ const WatchPage = () => {
           {videoData.title}
         </h1>
       </div>
+
       {videoData.category === "movie" && (
         <RecommendedMovies currentMovieId={id} />
-      )}    </div>
+      )}
+    </div>
   );
 };
 
