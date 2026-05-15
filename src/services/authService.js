@@ -25,17 +25,28 @@ API.interceptors.response.use(
 );
 
 // REGISTER USER
+// export const registerUser = async (userData) => {
+//   try {
+//     const res = await API.post("/registerUser", userData);
+
+//     const user = res.data.data;
+
+//     localStorage.setItem("auth", JSON.stringify(user));
+
+//     return user;
+
+//   } catch (error) {
+//     throw new Error(
+//       error.response?.data?.message ||
+//       error.message ||
+//       "Registration failed"
+//     );
+//   }
+// };
 export const registerUser = async (userData) => {
   try {
     const res = await API.post("/registerUser", userData);
-
-    const user = res.data.data;
-
-    // ✅ update UI immediately
-    localStorage.setItem("auth", JSON.stringify(user));
-
-    return user;
-
+    return res.data.data; // ← just return the user object cleanly
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||

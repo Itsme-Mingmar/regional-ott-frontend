@@ -47,9 +47,8 @@ const AccountForm = ({ selectedPlan, billing }) => {
 
     try {
       if (selectedPlan === "standard") {
-        const response = await registerUser(payload);
-
-        auth.login(response.data, response.data.token);
+        const user = await registerUser(payload); // ← gets user object directly
+        auth.login(user);                         // ← AuthContext stores it + sets state
         navigate("/home");
       }
 
@@ -64,20 +63,20 @@ const AccountForm = ({ selectedPlan, billing }) => {
     }
   };
   const handlePayment = async () => {
-  try {
-    const res = await axios.post(`${API_URL}/payment/initiate`, {
-      ...formData,
-      plan: selectedPlan,
-      billing
-    });
+    try {
+      const res = await axios.post(`${API_URL}/payment/initiate`, {
+        ...formData,
+        plan: selectedPlan,
+        billing
+      });
 
-    window.location.href = res.data.payment_url;
+      window.location.href = res.data.payment_url;
 
-  } catch (err) {
-    setError(err.response?.data?.message || err.response?.data?.error || "Payment initiation failed");
-    setShowModal(false);
-  }
-};
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.error || "Payment initiation failed");
+      setShowModal(false);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto bg-[#0f0f23] p-8 rounded-lg shadow-lg">
